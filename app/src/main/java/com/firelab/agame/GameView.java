@@ -8,51 +8,54 @@ import android.graphics.Color;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-public class GameView extends SurfaceView {
+public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Bitmap bmp;
     private SurfaceHolder holder;
-    private GameThread gameLoopThread;
+    private GameThread gameThread;
     private int x = 0;
+    public TimeLabel timeLabel;
+    public Square square;
 
     public GameView(Context context) {
         super(context);
-        gameLoopThread = new GameThread(this);
-        holder = getHolder();
-        holder.addCallback(new SurfaceHolder.Callback() {
-
-            @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
-                boolean retry = true;
-                gameLoopThread.setRunning(false);
-                while (retry) {
-                    try {
-                        gameLoopThread.join();
-                        retry = false;
-                    } catch (InterruptedException e) {
-                    }
-                }
-            }
-
-            @Override
-            public void surfaceCreated(SurfaceHolder holder) {
-                gameLoopThread.setRunning(true);
-                gameLoopThread.start();
-            }
-
-            @Override
-            public void surfaceChanged(SurfaceHolder holder, int format,
-                                       int width, int height) {
-            }
-        });
-        //bmp = BitmapFactory.decodeResource(getResources(), R.drawable.icon);
+        getHolder().addCallback(this);
+        gameThread = new GameThread(getHolder(), this);
+        setFocusable(true);
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
-        canvas.drawColor(Color.BLACK);
-        if (x < getWidth() - bmp.getWidth()) {
-            x++;
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height){}
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder){
+        boolean retry = true;
+        while(retry){
+            try{
+                gameThread.setRunning(false);
+                gameThread.join();
+            }catch(InterruptedException e){
+                e.printStackTrace();
+                retry = false;
+            }
         }
-        canvas.drawBitmap(bmp, x, 10, null);
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder){
+        timeLabel = new TimeLabel();
+        square = new Square(BitmapFactory.decodeResource(getResources(), R.drawable.square));
+        gameThread.setRunning(true);
+        gameThread.start();
+    }
+
+    public void update(){
+        //timeLabel.update();
+    }
+
+    @Override
+    public void draw(Canvas canvas){
+        super.draw(canvas);
+        timeLabel.draw(canvas);
+        square.draw(canvas);
     }
 }

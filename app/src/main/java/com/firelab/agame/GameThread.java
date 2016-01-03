@@ -1,34 +1,67 @@
 package com.firelab.agame;
 
 import android.graphics.Canvas;
+import android.view.SurfaceHolder;
 
 public class GameThread extends Thread
 {
-    private GameView view;
-    private boolean running = false;
+    private int FPS = 30;
+    private double averageFPS;
+    private SurfaceHolder surfaceHolder;
+    private GameView gameView;
+    private boolean running;
+    public static Canvas canvas;
 
-    public GameThread(GameView view) {
-        this.view = view;
-    }
-
-    public void setRunning(boolean run) {
-        running = run;
+    public GameThread(SurfaceHolder surfaceHolder, GameView gameView) {
+        super();
+        this.surfaceHolder = surfaceHolder;
+        this.gameView = gameView;
     }
 
     @Override
     public void run() {
+        long startTime = 0;
+        long timeMillis;
+        long waitTime;
+        long totalTime = 0;
+        int frameCount = 0;
+        long targetTime = 1000/FPS;
+
         while (running) {
-            Canvas c = null;
+            startTime = System.nanoTime();
+            canvas = null;
             try {
-                c = view.getHolder().lockCanvas();
-                synchronized (view.getHolder()) {
-                    view.onDraw(c);
+                canvas = this.surfaceHolder.lockCanvas();
+                synchronized (surfaceHolder){
+                    this.gameView.update();
+                    this.gameView.draw(canvas);
                 }
-            } finally {
-                if (c != null) {
-                    view.getHolder().unlockCanvasAndPost(c);
+            } catch(Exception e){}
+            finally {
+                if (canvas != null){
+                    try{
+                        surfaceHolder.unlockCanvasAndPost(canvas);
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
                 }
             }
         }
+        timeMillis = (System.nanoTime() - startTime) / 1000000;
+        waitTime = targetTime - timeMillis;
+        try{
+            this.sleep(waitTime);
+        }catch(Exception e){}
+        totalTime += System.nanoTime() - startTime;
+        frameCount++;
+        if (frameCount == FPS) {
+            averageFPS = 1000/((totalTime/frameCount)/100000);
+            frameCount = 0;
+            totalTime = 0;
+        }
+    }
+
+    public void setRunning(boolean value){
+        running = value;
     }
 }
