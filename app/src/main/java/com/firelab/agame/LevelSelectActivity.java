@@ -1,5 +1,6 @@
 package com.firelab.agame;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -54,6 +55,8 @@ public class LevelSelectActivity extends AppCompatActivity {
     }
 
     public void btnLevel1_OnClick(View view) {
+        Intent intent = new Intent(LevelSelectActivity.this, GameActivity.class);
+        startActivity(intent);
     }
 
     public void btnLevel2_OnClick(View view) {
