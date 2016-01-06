@@ -1,6 +1,7 @@
 package com.firelab.agame;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Window;
@@ -22,6 +23,14 @@ public class GameActivity extends AppCompatActivity {
 // 2. Chain together various setter methods to set the dialog characteristics
         builder.setMessage("SomeMessage")
                 .setTitle("SomeTitle");
+
+        builder.setPositiveButton(R.string.AlertStartButtonCaption, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // if this button is clicked, close
+                // current activity
+                //MainActivity.this.finish();
+            }
+        });
 
 // 3. Get the AlertDialog from create()
         AlertDialog dialog = builder.create();

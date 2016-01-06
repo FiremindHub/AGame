@@ -22,4 +22,7 @@
     <string name="Level19ButtonCaption">19</string>
     <string name="Level20ButtonCaption">20</string>
     <string name="LevelSelectActivityCaption">Levels</string>
+    <string name="NotImplementedExceptionMessage">Class must be implemented</string>
+    <string name="Level1Caption">Level 1</string>
+    <string name="AlertStartButtonCaption">Go!</string>
 </resources>
