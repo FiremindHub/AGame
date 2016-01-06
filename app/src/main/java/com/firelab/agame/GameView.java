@@ -44,6 +44,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceCreated(SurfaceHolder holder){
         timeLabel = new TimeLabel();
         square = new Square(BitmapFactory.decodeResource(getResources(), R.drawable.square));
+    }
+
+    public void start(){
         gameThread.setRunning(true);
         gameThread.start();
     }

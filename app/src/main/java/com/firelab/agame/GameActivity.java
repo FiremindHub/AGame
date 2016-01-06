@@ -9,32 +9,27 @@ import android.view.WindowManager;
 
 public class GameActivity extends AppCompatActivity {
 
+    GameView gameView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(new GameView(this));
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        gameView = new GameView(this);
+        setContentView(gameView);
 
-        // 1. Instantiate an AlertDialog.Builder with its constructor
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-// 2. Chain together various setter methods to set the dialog characteristics
         builder.setMessage("SomeMessage")
                 .setTitle("SomeTitle");
-
         builder.setPositiveButton(R.string.AlertStartButtonCaption, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // if this button is clicked, close
-                // current activity
-                //MainActivity.this.finish();
+                gameView.start();
             }
         });
-
-// 3. Get the AlertDialog from create()
         AlertDialog dialog = builder.create();
-
         dialog.show();
     }
 }
