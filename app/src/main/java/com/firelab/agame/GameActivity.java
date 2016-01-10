@@ -21,7 +21,7 @@ public class GameActivity extends AppCompatActivity {
         gameView = new GameView(this);
         setContentView(gameView);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppTheme);
         builder.setMessage("SomeMessage")
                 .setTitle("SomeTitle");
         builder.setPositiveButton(R.string.AlertStartButtonCaption, new DialogInterface.OnClickListener() {
