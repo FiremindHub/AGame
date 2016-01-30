@@ -21,7 +21,16 @@ public class GameActivity extends AppCompatActivity {
         gameView = new GameView(this);
         setContentView(gameView);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppTheme);
+        LevelStartDialog levelStartDialog = new LevelStartDialog();
+
+        levelStartDialog.showDialog(gameView.getContext(), "SomeTitle", "Some Message",
+                new Runnable(){
+                    public void run(){
+                        gameView.start();
+                    }
+                });
+
+        /*AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppTheme);
         builder.setMessage("SomeMessage")
                 .setTitle("SomeTitle");
         builder.setPositiveButton(R.string.AlertStartButtonCaption, new DialogInterface.OnClickListener() {
@@ -30,6 +39,6 @@ public class GameActivity extends AppCompatActivity {
             }
         });
         AlertDialog dialog = builder.create();
-        dialog.show();
+        dialog.show();*/
     }
 }

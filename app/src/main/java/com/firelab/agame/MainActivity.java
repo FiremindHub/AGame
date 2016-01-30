@@ -21,9 +21,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        FontHelper.ApplyFont(findViewById(R.id.MainLayout), getApplicationContext());
         btnPlay = (Button)findViewById(R.id.btnPlay);
-        Typeface typeface = Typeface.createFromAsset(getAssets(), "a_LCDNova Regular.ttf");
-        btnPlay.setTypeface(typeface);
+        /*Typeface typeface = Typeface.createFromAsset(getAssets(), "a_LCDNova Regular.ttf");
+        btnPlay.setTypeface(typeface);*/
         btnPlay.setPaintFlags(btnPlay.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
     }
 

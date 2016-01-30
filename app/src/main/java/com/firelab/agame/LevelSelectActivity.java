@@ -29,7 +29,8 @@ public class LevelSelectActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_level_select);
-        SetActivityElementsTypeFace();
+        FontHelper.ApplyFont(findViewById(R.id.MainLayout), getApplicationContext());
+        //SetActivityElementsTypeFace();
     }
 
     private void SetActivityElementsTypeFace(){
