@@ -14,6 +14,8 @@ import com.firelab.agame.TimeLabel;
 public class Level extends SurfaceView implements SurfaceHolder.Callback {
     private Context context;
     private GameThread gameThread;
+    private int width = 0;
+    private int height = 0;
 
     public Level(Context context){
         super(context);
@@ -29,6 +31,8 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
         return null;
     }
     public int getLevelSeconds() { return 0; }
+    public int getLevelHeight(){return height;}
+    public int getLevelWidth(){return width;}
 
     public void start(){
         gameThread.setRunning(true);
@@ -46,7 +50,8 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
+        this.width = width;
+        this.height = height;
     }
 
     @Override
