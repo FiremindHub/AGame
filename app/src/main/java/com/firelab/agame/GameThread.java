@@ -3,19 +3,21 @@ package com.firelab.agame;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
+import com.firelab.agame.levels.Level;
+
 public class GameThread extends Thread
 {
     private int FPS = 30;
     private double averageFPS;
     private SurfaceHolder surfaceHolder;
-    private GameView gameView;
+    private Level level;
     private boolean running;
     public static Canvas canvas;
 
-    public GameThread(SurfaceHolder surfaceHolder, GameView gameView) {
+    public GameThread(SurfaceHolder surfaceHolder, Level level) {
         super();
         this.surfaceHolder = surfaceHolder;
-        this.gameView = gameView;
+        this.level = level;
     }
 
     @Override
@@ -33,8 +35,8 @@ public class GameThread extends Thread
             try {
                 canvas = this.surfaceHolder.lockCanvas();
                 synchronized (surfaceHolder){
-                    this.gameView.update();
-                    this.gameView.draw(canvas);
+                    this.level.update();
+                    this.level.draw(canvas);
                 }
             } catch(Exception e){}
             finally {

@@ -7,9 +7,12 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.firelab.agame.levels.Level;
+import com.firelab.agame.levels.Level1;
+
 public class GameActivity extends AppCompatActivity {
 
-    GameView gameView;
+    Level level;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,15 +21,14 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        gameView = new GameView(this);
-        setContentView(gameView);
+        level = getLevel();
+        setContentView(level);
 
         LevelStartDialog levelStartDialog = new LevelStartDialog();
-
-        levelStartDialog.showDialog(gameView.getContext(), "SomeTitle", "Some Message",
+        levelStartDialog.showDialog(level.getContext(), level.getCaption(), level.getMessage(),
                 new Runnable(){
                     public void run(){
-                        gameView.start();
+                        level.start();
                     }
                 });
 
@@ -40,5 +42,9 @@ public class GameActivity extends AppCompatActivity {
         });
         AlertDialog dialog = builder.create();
         dialog.show();*/
+    }
+
+    private Level getLevel(){
+        return new Level1(this);
     }
 }

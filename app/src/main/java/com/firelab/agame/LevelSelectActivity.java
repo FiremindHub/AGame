@@ -10,6 +10,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.firelab.agame.levels.Level1;
+
 public class LevelSelectActivity extends AppCompatActivity {
 
     TextView captionTextView;
