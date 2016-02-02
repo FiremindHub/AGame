@@ -82,8 +82,6 @@ public class Level1 extends Level {
         paint.setTextSize(25);
         paint.setStyle(Paint.Style.FILL);
 
-        String now = now();
-
         Rect rect = new Rect();
 
         String boundsString = String.valueOf(getWidth()) + ";" + String.valueOf(getHeight());

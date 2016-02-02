@@ -29,7 +29,7 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     private int height = 0;
     private final long nanoFactor = 1000000;
     private final int milliFactor = 1000;
-    long startTime = 0;
+    long levelEndTime = 0;
 
     public Level(Context context){
         super(context);
@@ -51,7 +51,7 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     public void start(){
         gameThread.setRunning(true);
         gameThread.start();
-        startTime = System.currentTimeMillis();
+        long endTime = System.currentTimeMillis() + (getLevelSeconds() * milliFactor);
     }
 
     protected String getString(int resourceId){
@@ -111,8 +111,7 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private String getTimerValue() {
-        long endTime = startTime + (getLevelSeconds() * milliFactor);
-        long diff = endTime - startTime;
+        long diff = levelEndTime - System.currentTimeMillis();
         //return String.valueOf((float)(diff / milliFactor));
         return String.format("%02d min, %02d sec",
                 TimeUnit.MILLISECONDS.toMinutes(diff),
@@ -121,7 +120,7 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
 
     }
 
-    public static String now() {
+    private String now() {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         return sdf.format(cal.getTime());
