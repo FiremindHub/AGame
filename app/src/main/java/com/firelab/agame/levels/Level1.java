@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 
+import com.firelab.agame.FontHelper;
 import com.firelab.agame.R;
 
 import java.text.SimpleDateFormat;
@@ -69,6 +70,7 @@ public class Level1 extends Level {
         squareHeight = square.getHeight();
         canvas.drawBitmap(square, x, y, null);
         drawBounds(canvas);
+        drawTime(canvas);
         //timeLabel.draw(canvas);
         //square.draw(canvas);
     }
@@ -78,13 +80,14 @@ public class Level1 extends Level {
         paint.setColor(Color.YELLOW);
         paint.setTextSize(25);
         paint.setStyle(Paint.Style.FILL);
+        paint.setTypeface(FontHelper.getTypeface());
 
         String now = now();
 
         Rect rect = new Rect();
         paint.getTextBounds(now, 0, now.length(), rect);
 
-        canvas.drawText(now, 10, rect.height() + 10, paint);
+        canvas.drawText(now, getWidth() - rect.width() - 10, rect.height() + 10, paint);
     }
 
     public void drawBounds(Canvas canvas){

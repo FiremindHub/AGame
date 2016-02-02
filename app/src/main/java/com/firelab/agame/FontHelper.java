@@ -10,9 +10,11 @@ import android.widget.TextView;
 
 public final class FontHelper {
 
+    private static Typeface typeface;
+
     public static final void ApplyFont(View parentView, Context context){
         final String typeFaceName = "MainFont.ttf";
-        Typeface typeface = Typeface.createFromAsset(context.getAssets(), typeFaceName);
+        typeface = Typeface.createFromAsset(context.getAssets(), typeFaceName);
         SetFont((ViewGroup)parentView, typeface);
     }
 
@@ -36,7 +38,10 @@ public final class FontHelper {
                     && ((ViewGroup)view).getChildCount() > 0) {
                 SetFont((ViewGroup) view, typeface);
             }
-
         }
+    }
+
+    public static Typeface getTypeface(){
+        return typeface;
     }
 }
