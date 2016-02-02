@@ -70,25 +70,11 @@ public class Level1 extends Level {
         squareHeight = square.getHeight();
         canvas.drawBitmap(square, x, y, null);
         drawBounds(canvas);
-        drawTime(canvas);
         //timeLabel.draw(canvas);
         //square.draw(canvas);
     }
 
-    public void drawTime(Canvas canvas){
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(Color.YELLOW);
-        paint.setTextSize(25);
-        paint.setStyle(Paint.Style.FILL);
-        paint.setTypeface(FontHelper.getTypeface());
 
-        String now = now();
-
-        Rect rect = new Rect();
-        paint.getTextBounds(now, 0, now.length(), rect);
-
-        canvas.drawText(now, getWidth() - rect.width() - 10, rect.height() + 10, paint);
-    }
 
     public void drawBounds(Canvas canvas){
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -118,9 +104,5 @@ public class Level1 extends Level {
         canvas.drawText(squareSizeString, 10, rect.height() + 110, paint);*/
     }
 
-    public static String now() {
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        return sdf.format(cal.getTime());
-    }
+
 }
