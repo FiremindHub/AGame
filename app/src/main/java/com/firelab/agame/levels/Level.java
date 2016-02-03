@@ -51,7 +51,7 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     public void start(){
         gameThread.setRunning(true);
         gameThread.start();
-        long endTime = System.currentTimeMillis() + (getLevelSeconds() * milliFactor);
+        levelEndTime = System.currentTimeMillis() + (getLevelSeconds() * milliFactor);
     }
 
     protected String getString(int resourceId){
@@ -113,10 +113,11 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     private String getTimerValue() {
         long diff = levelEndTime - System.currentTimeMillis();
         //return String.valueOf((float)(diff / milliFactor));
-        return String.format("%02d min, %02d sec",
+        /*return String.format("%02d min, %02d sec",
                 TimeUnit.MILLISECONDS.toMinutes(diff),
                 TimeUnit.MILLISECONDS.toSeconds(diff) -
-                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(diff)));
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(diff)));*/
+        return String.valueOf(diff);
 
     }
 
