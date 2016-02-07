@@ -23,7 +23,6 @@ public class LevelStartDialog {
     @SuppressWarnings("static-access")
     public void showDialog(final Context context, String title, String message,
                        final Runnable task) {
-        //Typeface typeface = Typeface.createFromAsset(context.getAssets(), "a_LCDNova Regular.ttf");
         this.context = context;
         dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -36,7 +35,6 @@ public class LevelStartDialog {
         FontHelper.ApplyFont(layout, context);
         titleTextView.setText(bold(title));
         messageTextView.setText(message);
-        //messageTextView.setTypeface(typeface);
         dialog.show();
         btnOK.setText(bold(context.getString(R.string.AlertStartButtonCaption)));
         vib = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
@@ -52,16 +50,12 @@ public class LevelStartDialog {
             }
         });
     }
-    //customize text style bold italic....
+
     public SpannableString bold(String s) {
-        //Typeface typeface = Typeface.createFromAsset(context.getAssets(), "a_LCDNova Regular.ttf");
         SpannableString spanString = new SpannableString(s);
         spanString.setSpan(new StyleSpan(Typeface.BOLD), 0,
                 spanString.length(), 0);
         spanString.setSpan(new UnderlineSpan(), 0, spanString.length(), 0);
-        //spanString.setSpan(typeface, 0, spanString.length(), 0);
-        // spanString.setSpan(new StyleSpan(Typeface.ITALIC), 0,
-        // spanString.length(), 0);
         return spanString;
     }
 }

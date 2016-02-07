@@ -27,9 +27,9 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     private GameThread gameThread;
     private int width = 0;
     private int height = 0;
-    private final long nanoFactor = 1000000;
     private final int milliFactor = 1000;
     long levelEndTime = 0;
+    boolean alive = true;
 
     public Level(Context context){
         super(context);
@@ -52,6 +52,10 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
         gameThread.setRunning(true);
         gameThread.start();
         levelEndTime = System.currentTimeMillis() + (getLevelSeconds() * milliFactor);
+    }
+
+    public void stop(){
+        gameThread.setRunning(false);
     }
 
     protected String getString(int resourceId){
@@ -89,6 +93,10 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void draw(Canvas canvas){
+        if (!alive){
+            stop();
+            return;
+        }
         super.draw(canvas);
         drawTimer(canvas);
         //timeLabel.draw(canvas);
@@ -112,13 +120,21 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
 
     private String getTimerValue() {
         long diff = levelEndTime - System.currentTimeMillis();
+        if (diff <= 0){
+            alive = false;
+        }
         //return String.valueOf((float)(diff / milliFactor));
+
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(diff);
+        diff -= TimeUnit.SECONDS.toMillis(seconds);
+        long milliseconds = diff;
+
         /*return String.format("%02d min, %02d sec",
                 TimeUnit.MILLISECONDS.toMinutes(diff),
                 TimeUnit.MILLISECONDS.toSeconds(diff) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(diff)));*/
-        return String.valueOf(diff);
-
+        return String.format("%02d sec, %02d msec", seconds, milliseconds);
+        //return String.valueOf(diff);
     }
 
     private String now() {
