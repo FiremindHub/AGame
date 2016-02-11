@@ -23,14 +23,14 @@ public class GameActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         level = getLevel();
         setContentView(level);
-
-        LevelStartDialog levelStartDialog = new LevelStartDialog();
+        level.start();
+        /*LevelStartDialog levelStartDialog = new LevelStartDialog();
         levelStartDialog.showDialog(level.getContext(), level.getCaption(), level.getMessage(),
                 new Runnable(){
                     public void run(){
                         level.start();
                     }
-                });
+                });*/
 
         /*AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppTheme);
         builder.setMessage("SomeMessage")

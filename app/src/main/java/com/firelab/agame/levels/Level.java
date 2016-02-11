@@ -6,11 +6,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.firelab.agame.FontHelper;
 import com.firelab.agame.GameThread;
+import com.firelab.agame.LevelStartDialog;
 import com.firelab.agame.R;
 import com.firelab.agame.Square;
 import com.firelab.agame.TimeLabel;
@@ -30,6 +32,9 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     private final int milliFactor = 1000;
     long levelEndTime = 0;
     boolean alive = true;
+    int timerLabelX = 0;
+    int timerLabelY = 0;
+    int paintColor = Color.YELLOW;
 
     public Level(Context context){
         super(context);
@@ -38,6 +43,7 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
         gameThread = new GameThread(getHolder(), this);
         setFocusable(true);
     }
+
     public String getCaption() {
         return null;
     }
@@ -49,9 +55,23 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     public int getLevelWidth(){return width;}
 
     public void start(){
+        showStartDialog();
+    }
+
+    public void startInternal(){
         gameThread.setRunning(true);
         gameThread.start();
         levelEndTime = System.currentTimeMillis() + (getLevelSeconds() * milliFactor);
+    }
+
+    private void showStartDialog(){
+        LevelStartDialog levelStartDialog = new LevelStartDialog();
+        levelStartDialog.showDialog(context, getCaption(), getMessage(),
+                new Runnable(){
+                    public void run(){
+                        startInternal();
+                    }
+                });
     }
 
     public void stop(){
@@ -105,17 +125,15 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
 
     public void drawTimer(Canvas canvas){
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(Color.YELLOW);
-        paint.setTextSize(25);
+        paint.setColor(paintColor);
+        paint.setTextSize(30);
         paint.setStyle(Paint.Style.FILL);
-        paint.setTypeface(FontHelper.getTypeface());
+        paint.setFakeBoldText(true);
+        paint.setTypeface(Typeface.create(FontHelper.getTypeface(), Typeface.BOLD));
 
         String value = getTimerValue();
 
-        Rect rect = new Rect();
-        paint.getTextBounds(value, 0, value.length(), rect);
-
-        canvas.drawText(value, getWidth() - rect.width() - 10, rect.height() + 10, paint);
+        canvas.drawText(value, getTimerLabelX(value, paint), getTimerLabelY(value, paint), paint);
     }
 
     private String getTimerValue() {
@@ -127,14 +145,36 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
 
         long seconds = TimeUnit.MILLISECONDS.toSeconds(diff);
         diff -= TimeUnit.SECONDS.toMillis(seconds);
-        long milliseconds = diff;
+        long milliseconds = diff / 100;
+
+        if(seconds < 5) {
+            paintColor = Color.RED;
+        }
 
         /*return String.format("%02d min, %02d sec",
                 TimeUnit.MILLISECONDS.toMinutes(diff),
                 TimeUnit.MILLISECONDS.toSeconds(diff) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(diff)));*/
-        return String.format("%02d sec, %02d msec", seconds, milliseconds);
+        return String.format("%02d.%02d", seconds, milliseconds);
         //return String.valueOf(diff);
+    }
+
+    private int getTimerLabelX(String value, Paint paint){
+        if (timerLabelX == 0){
+            Rect rect = new Rect();
+            paint.getTextBounds(value, 0, value.length(), rect);
+            timerLabelX = getWidth() - rect.width() - 10;
+        }
+        return timerLabelX;
+    }
+
+    private int getTimerLabelY(String value, Paint paint){
+        if(timerLabelY == 0){
+            Rect rect = new Rect();
+            paint.getTextBounds(value, 0, value.length(), rect);
+            timerLabelY = rect.height() + 10;
+        }
+        return timerLabelY;
     }
 
     private String now() {
