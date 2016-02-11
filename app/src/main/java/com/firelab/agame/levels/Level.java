@@ -80,6 +80,7 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
 
     private void showStartDialog(){
         LevelDialog levelStartDialog = new LevelDialog(context);
+        levelStartDialog.setRetryButtonVisible(false);
         levelStartDialog.showDialog(getCaption(), getMessage(), getGoButtonCaption(),
                 new Runnable(){
                     public void run(){
@@ -127,10 +128,8 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void draw(Canvas canvas){
-        // TODO on stopping level time must be 00:00
         if (!alive){
             stop();
-            return;
         }
         super.draw(canvas);
         drawTimer(canvas);
@@ -155,6 +154,7 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
         long diff = levelEndTime - System.currentTimeMillis();
         if (diff <= 0){
             alive = false;
+            return "00:00";
         }
         //return String.valueOf((float)(diff / milliFactor));
 

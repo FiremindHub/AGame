@@ -60,11 +60,29 @@ public class LevelDialog {
         });
     }
 
-    public SpannableString bold(String s) {
+    private SpannableString bold(String s) {
         SpannableString spanString = new SpannableString(s);
         spanString.setSpan(new StyleSpan(Typeface.BOLD), 0,
                 spanString.length(), 0);
         spanString.setSpan(new UnderlineSpan(), 0, spanString.length(), 0);
         return spanString;
+    }
+
+    public void setRetryButtonVisible(Boolean visible){
+        if (!visible) {
+            btnRetry.setVisibility(View.INVISIBLE);
+        }
+        else{
+            btnRetry.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void setCancelButtonVisible(Boolean visible){
+        if (!visible) {
+            btnCancel.setVisibility(View.INVISIBLE);
+        }
+        else{
+            btnCancel.setVisibility(View.VISIBLE);
+        }
     }
 }
