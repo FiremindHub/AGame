@@ -54,6 +54,10 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     public int getLevelHeight(){return height;}
     public int getLevelWidth(){return width;}
 
+    private String getGoButtonCaption(){
+        return getString(R.string.AlertStartButtonCaption);
+    }
+
     public void start(){
         showStartDialog();
     }
@@ -64,9 +68,19 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
         levelEndTime = System.currentTimeMillis() + (getLevelSeconds() * milliFactor);
     }
 
-    private void showStartDialog(){
+    private void showStartDialog_old(){
         LevelStartDialog levelStartDialog = new LevelStartDialog();
         levelStartDialog.showDialog(context, getCaption(), getMessage(),
+                new Runnable(){
+                    public void run(){
+                        startInternal();
+                    }
+                });
+    }
+
+    private void showStartDialog(){
+        LevelDialog levelStartDialog = new LevelDialog(context);
+        levelStartDialog.showDialog(getCaption(), getMessage(), getGoButtonCaption(),
                 new Runnable(){
                     public void run(){
                         startInternal();
@@ -113,6 +127,7 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void draw(Canvas canvas){
+        // TODO on stopping level time must be 00:00
         if (!alive){
             stop();
             return;
