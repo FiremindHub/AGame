@@ -119,7 +119,7 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     public void stop(){
         gameThread.setRunning(false);
         levelState = LevelState.FINISHED;
-
+        showFinishDialog();
     }
 
     protected String getString(int resourceId){
