@@ -1,6 +1,7 @@
 package com.firelab.agame.levels;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -11,7 +12,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.firelab.agame.FontHelper;
+import com.firelab.agame.GameActivity;
 import com.firelab.agame.GameThread;
+import com.firelab.agame.LevelSelectActivity;
 import com.firelab.agame.LevelStartDialog;
 import com.firelab.agame.R;
 import com.firelab.agame.Square;
@@ -24,6 +27,18 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+enum LevelState {
+    CREATED,
+    STARTED,
+    FINISHED
+}
+
+enum LevelResult {
+    SUCCESS,
+    FAILED,
+    NONE
+}
+
 public class Level extends SurfaceView implements SurfaceHolder.Callback {
     private Context context;
     private GameThread gameThread;
@@ -35,6 +50,8 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     int timerLabelX = 0;
     int timerLabelY = 0;
     int paintColor = Color.YELLOW;
+    LevelState levelState;
+    LevelResult levelResult = LevelResult.NONE;
 
     public Level(Context context){
         super(context);
@@ -42,6 +59,7 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
         getHolder().addCallback(this);
         gameThread = new GameThread(getHolder(), this);
         setFocusable(true);
+        levelState = LevelState.CREATED;
     }
 
     public String getCaption() {
@@ -55,7 +73,11 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     public int getLevelWidth(){return width;}
 
     private String getGoButtonCaption(){
-        return getString(R.string.AlertStartButtonCaption);
+        return getString(R.string.DialogGoButtonCaption);
+    }
+
+    private String getNextButtonCaption(){
+        return getString(R.string.DialogNextButtonCaption);
     }
 
     public void start(){
@@ -66,31 +88,38 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
         gameThread.setRunning(true);
         gameThread.start();
         levelEndTime = System.currentTimeMillis() + (getLevelSeconds() * milliFactor);
-    }
-
-    private void showStartDialog_old(){
-        LevelStartDialog levelStartDialog = new LevelStartDialog();
-        levelStartDialog.showDialog(context, getCaption(), getMessage(),
-                new Runnable(){
-                    public void run(){
-                        startInternal();
-                    }
-                });
+        levelState = LevelState.STARTED;
     }
 
     private void showStartDialog(){
         LevelDialog levelStartDialog = new LevelDialog(context);
         levelStartDialog.setRetryButtonVisible(false);
-        levelStartDialog.showDialog(getCaption(), getMessage(), getGoButtonCaption(),
-                new Runnable(){
-                    public void run(){
-                        startInternal();
-                    }
-                });
+        levelStartDialog.setGoButtonHandler(getGoButtonHandler());
+        levelStartDialog.setCancelButtonHandler(getCancelButtonHandler());
+        levelStartDialog.showDialog(
+                getCaption(),
+                getMessage(),
+                getGoButtonCaption());
+    }
+
+    private void showFinishDialog(){
+        LevelDialog levelFinishDialog = new LevelDialog(context);
+        levelFinishDialog.setGoButtonHandler(getGoButtonHandler());
+        levelFinishDialog.setCancelButtonHandler(getCancelButtonHandler());
+        if (levelResult != LevelResult.SUCCESS){
+            levelFinishDialog.setGoButtonVisible(false);
+            levelFinishDialog.setCaptionTextColor(Color.RED);
+        }
+        levelFinishDialog.showDialog(
+                getFinishDialogCaption(),
+                getFinishDialogMessage(),
+                getNextButtonCaption());
     }
 
     public void stop(){
         gameThread.setRunning(false);
+        levelState = LevelState.FINISHED;
+
     }
 
     protected String getString(int resourceId){
@@ -154,9 +183,9 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
         long diff = levelEndTime - System.currentTimeMillis();
         if (diff <= 0){
             alive = false;
+            levelResult = LevelResult.FAILED;
             return "00:00";
         }
-        //return String.valueOf((float)(diff / milliFactor));
 
         long seconds = TimeUnit.MILLISECONDS.toSeconds(diff);
         diff -= TimeUnit.SECONDS.toMillis(seconds);
@@ -166,12 +195,7 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
             paintColor = Color.RED;
         }
 
-        /*return String.format("%02d min, %02d sec",
-                TimeUnit.MILLISECONDS.toMinutes(diff),
-                TimeUnit.MILLISECONDS.toSeconds(diff) -
-                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(diff)));*/
         return String.format("%02d.%02d", seconds, milliseconds);
-        //return String.valueOf(diff);
     }
 
     private int getTimerLabelX(String value, Paint paint){
@@ -196,5 +220,48 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         return sdf.format(cal.getTime());
+    }
+
+    private Runnable getGoButtonHandler(){
+        return new Runnable(){
+            public void run(){
+                startInternal();
+            }
+        };
+    }
+
+    private Runnable getCancelButtonHandler(){
+        return new Runnable(){
+            public void run(){
+                Intent intent = new Intent(context, LevelSelectActivity.class);
+                context.startActivity(intent);
+            }
+        };
+    }
+
+    private String getFinishDialogCaption (){
+        String levelResultString = getString(R.string.LevelResultNone);
+        switch (levelResult){
+            case SUCCESS:
+                levelResultString = getString(R.string.LevelResultSuccess);
+                break;
+            case FAILED:
+                levelResultString = getString(R.string.LevelResultFailed);
+                break;
+            default:
+                break;
+        }
+        return String.format(" %s - %S", getCaption(),levelResultString);
+    }
+
+    private String getFinishDialogMessage() {
+        switch (levelResult){
+            case SUCCESS:
+                return getString(R.string.FinishDialogContinueOffer);
+            case FAILED:
+                return getString(R.string.FinishDialogRetryOffer);
+            default:
+                return null;
+        }
     }
 }
