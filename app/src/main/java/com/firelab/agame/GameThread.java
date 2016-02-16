@@ -48,19 +48,20 @@ public class GameThread extends Thread
                     }
                 }
             }
+            timeMillis = (System.nanoTime() - startTime) / 1000000;
+            waitTime = targetTime - timeMillis;
+            try{
+                this.sleep(waitTime);
+            }catch(Exception e){}
+            totalTime += System.nanoTime() - startTime;
+            frameCount++;
+            if (frameCount == FPS) {
+                averageFPS = 1000/((totalTime/frameCount)/100000);
+                frameCount = 0;
+                totalTime = 0;
+            }
         }
-        timeMillis = (System.nanoTime() - startTime) / 1000000;
-        waitTime = targetTime - timeMillis;
-        try{
-            this.sleep(waitTime);
-        }catch(Exception e){}
-        totalTime += System.nanoTime() - startTime;
-        frameCount++;
-        if (frameCount == FPS) {
-            averageFPS = 1000/((totalTime/frameCount)/100000);
-            frameCount = 0;
-            totalTime = 0;
-        }
+        this.level.showFinishDialog();
     }
 
     public void setRunning(boolean value){

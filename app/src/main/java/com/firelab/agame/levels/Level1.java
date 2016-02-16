@@ -19,7 +19,7 @@ import java.util.Random;
 public class Level1 extends Level {
     private String caption = getString(R.string.Level1Caption);
     private String message = "You must tap 10 squares in 10 seconds";
-    private int levelSeconds = 15;
+    private int levelSeconds = 5;
     int x = 100;
     int y  = 100;
     float tapX = 0;

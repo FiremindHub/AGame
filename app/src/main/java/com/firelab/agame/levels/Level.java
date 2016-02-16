@@ -2,7 +2,6 @@ package com.firelab.agame.levels;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -15,16 +14,10 @@ import com.firelab.agame.FontHelper;
 import com.firelab.agame.GameActivity;
 import com.firelab.agame.GameThread;
 import com.firelab.agame.LevelSelectActivity;
-import com.firelab.agame.LevelStartDialog;
 import com.firelab.agame.R;
-import com.firelab.agame.Square;
-import com.firelab.agame.TimeLabel;
 
-import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 enum LevelState {
@@ -102,7 +95,7 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
                 getGoButtonCaption());
     }
 
-    private void showFinishDialog(){
+    public void showFinishDialog(){
         LevelDialog levelFinishDialog = new LevelDialog(context);
         levelFinishDialog.setGoButtonHandler(getNextButtonHandler());
         levelFinishDialog.setCancelButtonHandler(getCancelButtonHandler());
@@ -118,8 +111,10 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
 
     public void stop(){
         gameThread.setRunning(false);
+        //gameThread.join();
+        //gameThread.interrupt();
         levelState = LevelState.FINISHED;
-        showFinishDialog();
+        //showFinishDialog();
     }
 
     protected String getString(int resourceId){
@@ -157,8 +152,9 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void draw(Canvas canvas){
-        if (!alive){
+        if (!alive && levelState != LevelState.FINISHED){
             stop();
+            return;
         }
         super.draw(canvas);
         drawTimer(canvas);
