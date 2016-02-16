@@ -104,7 +104,7 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
 
     private void showFinishDialog(){
         LevelDialog levelFinishDialog = new LevelDialog(context);
-        levelFinishDialog.setGoButtonHandler(getGoButtonHandler());
+        levelFinishDialog.setGoButtonHandler(getNextButtonHandler());
         levelFinishDialog.setCancelButtonHandler(getCancelButtonHandler());
         if (levelResult != LevelResult.SUCCESS){
             levelFinishDialog.setGoButtonVisible(false);
@@ -237,6 +237,19 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
                 context.startActivity(intent);
             }
         };
+    }
+
+    private Runnable getNextButtonHandler(){
+        return new Runnable(){
+            public void run(){
+                Intent intent = new Intent(context, GameActivity.class);
+                context.startActivity(intent);
+            }
+        };
+    }
+
+    private Runnable getRetryButtonHandler(){
+        return getGoButtonHandler();
     }
 
     private String getFinishDialogCaption (){
