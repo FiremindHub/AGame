@@ -1,5 +1,6 @@
 package com.firelab.agame.levels;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -7,6 +8,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.os.Handler;
+import android.os.Message;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -18,6 +21,7 @@ import com.firelab.agame.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 
 enum LevelState {
@@ -45,6 +49,14 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     int paintColor = Color.YELLOW;
     LevelState levelState;
     LevelResult levelResult = LevelResult.NONE;
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+        }
+    };
+
+
 
     public Level(Context context){
         super(context);
@@ -114,7 +126,12 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
         //gameThread.join();
         //gameThread.interrupt();
         levelState = LevelState.FINISHED;
-        //showFinishDialog();
+        ((Activity)context).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                showFinishDialog();
+            }
+        });
     }
 
     protected String getString(int resourceId){

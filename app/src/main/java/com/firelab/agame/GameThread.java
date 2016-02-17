@@ -61,7 +61,6 @@ public class GameThread extends Thread
                 totalTime = 0;
             }
         }
-        this.level.showFinishDialog();
     }
 
     public void setRunning(boolean value){
