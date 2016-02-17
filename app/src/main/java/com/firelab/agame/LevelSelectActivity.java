@@ -32,11 +32,11 @@ public class LevelSelectActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_level_select);
         FontHelper.ApplyFont(findViewById(R.id.MainLayout), getApplicationContext());
-        //SetActivityElementsTypeFace();
+        SetActivityElementsTypeFace();
     }
 
     private void SetActivityElementsTypeFace(){
-        Typeface typeface = Typeface.createFromAsset(getAssets(), "a_LCDNova Regular.ttf");
+        //Typeface typeface = Typeface.createFromAsset(getAssets(), "a_LCDNova Regular.ttf");
         captionTextView = (TextView)findViewById(R.id.ActivityCaptionTextView);
         btnLevel1 = (Button)findViewById(R.id.btnLevel1);
         btnLevel2 = (Button)findViewById(R.id.btnLevel2);
@@ -46,7 +46,7 @@ public class LevelSelectActivity extends AppCompatActivity {
         btnLevel6 = (Button)findViewById(R.id.btnLevel6);
         btnLevel7 = (Button)findViewById(R.id.btnLevel7);
         btnLevel8 = (Button)findViewById(R.id.btnLevel8);
-        btnLevel1.setTypeface(typeface);
+        /*btnLevel1.setTypeface(typeface);
         btnLevel2.setTypeface(typeface);
         btnLevel3.setTypeface(typeface);
         btnLevel4.setTypeface(typeface);
@@ -54,12 +54,20 @@ public class LevelSelectActivity extends AppCompatActivity {
         btnLevel6.setTypeface(typeface);
         btnLevel7.setTypeface(typeface);
         btnLevel8.setTypeface(typeface);
-        captionTextView.setTypeface(typeface);
+        captionTextView.setTypeface(typeface);*/
+
+        btnLevel1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LevelSelectActivity.this, GameActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     public void btnLevel1_OnClick(View view) {
-        Intent intent = new Intent(LevelSelectActivity.this, GameActivity.class);
-        startActivity(intent);
+
     }
 
     public void btnLevel2_OnClick(View view) {
