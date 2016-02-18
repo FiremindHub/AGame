@@ -47,4 +47,8 @@ public class GameActivity extends AppCompatActivity {
     private Level getLevel(){
         return new Level1(this);
     }
+
+    public void closeActivity(){
+        finish();
+    }
 }

@@ -246,8 +246,9 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     private Runnable getCancelButtonHandler(){
         return new Runnable(){
             public void run(){
-                Intent intent = new Intent(context, LevelSelectActivity.class);
-                context.startActivity(intent);
+                /*Intent intent = new Intent(context, LevelSelectActivity.class);
+                context.startActivity(intent);*/
+                ((GameActivity)context).closeActivity();
             }
         };
     }
