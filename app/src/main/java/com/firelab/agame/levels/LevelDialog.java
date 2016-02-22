@@ -37,7 +37,11 @@ public class LevelDialog {
     }
 
     private void Initialize(){
-        dialog = new Dialog(context);
+        try {
+            dialog = new Dialog(context);
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.level_dialog);
         dialog.setCancelable(false);
@@ -69,7 +73,7 @@ public class LevelDialog {
         SpannableString spanString = new SpannableString(s);
         spanString.setSpan(new StyleSpan(Typeface.BOLD), 0,
                 spanString.length(), 0);
-        spanString.setSpan(new UnderlineSpan(), 0, spanString.length(), 0);
+        //spanString.setSpan(new UnderlineSpan(), 0, spanString.length(), 0);
         return spanString;
     }
 
@@ -140,7 +144,7 @@ public class LevelDialog {
         btnCancel.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View arg0){
-                dialog.dismiss();
+                dialog.cancel();
                 if (btnCancelHandler != null){
                     btnCancelHandler.run();
                 }

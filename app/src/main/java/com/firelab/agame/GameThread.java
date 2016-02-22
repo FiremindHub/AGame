@@ -1,6 +1,7 @@
 package com.firelab.agame;
 
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 import com.firelab.agame.levels.Level;
@@ -50,9 +51,13 @@ public class GameThread extends Thread
             }
             timeMillis = (System.nanoTime() - startTime) / 1000000;
             waitTime = targetTime - timeMillis;
-            try{
-                this.sleep(waitTime);
-            }catch(Exception e){}
+            if (waitTime > 0){
+                try{
+                    this.sleep(waitTime);
+                }catch(Exception e){
+                    Log.e("GAMETHREAD_Exception", e.getMessage() + ": " + waitTime);
+                }
+            }
             totalTime += System.nanoTime() - startTime;
             frameCount++;
             if (frameCount == FPS) {
@@ -61,6 +66,9 @@ public class GameThread extends Thread
                 totalTime = 0;
             }
         }
+        level = null;
+        canvas = null;
+        surfaceHolder = null;
     }
 
     public void setRunning(boolean value){

@@ -6,10 +6,13 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -43,16 +46,25 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     private int height = 0;
     private final int milliFactor = 1000;
     long levelEndTime = 0;
-    boolean alive = true;
     int timerLabelX = 0;
     int timerLabelY = 0;
     int paintColor = Color.YELLOW;
     LevelState levelState;
     LevelResult levelResult = LevelResult.NONE;
+    long diff = getLevelSeconds() * milliFactor;
 
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler(Looper.getMainLooper()){
         @Override
         public void handleMessage(Message msg) {
+            if (levelState == LevelState.FINISHED){
+                return;
+            }
+            try {
+                TimeUnit.MILLISECONDS.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            stop(LevelResult.FAILED);
         }
     };
 
@@ -72,6 +84,9 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     }
     public String getMessage() {
         return null;
+    }
+    public int getNumber(){
+        return 0;
     }
     public int getLevelSeconds() { return 0; }
     public int getLevelHeight(){return height;}
@@ -94,6 +109,7 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
         gameThread.start();
         levelEndTime = System.currentTimeMillis() + (getLevelSeconds() * milliFactor);
         levelState = LevelState.STARTED;
+        handler.sendEmptyMessageDelayed(0, (getLevelSeconds() * milliFactor));
     }
 
     private void showStartDialog(){
@@ -111,9 +127,12 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
         LevelDialog levelFinishDialog = new LevelDialog(context);
         levelFinishDialog.setGoButtonHandler(getNextButtonHandler());
         levelFinishDialog.setCancelButtonHandler(getCancelButtonHandler());
+        levelFinishDialog.setRetryButtonHandler(getRetryButtonHandler());
         if (levelResult != LevelResult.SUCCESS){
             levelFinishDialog.setGoButtonVisible(false);
             levelFinishDialog.setCaptionTextColor(Color.RED);
+        } else {
+            levelFinishDialog.setCaptionTextColor(Color.GREEN);
         }
         levelFinishDialog.showDialog(
                 getFinishDialogCaption(),
@@ -121,17 +140,10 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
                 getNextButtonCaption());
     }
 
-    public void stop(){
-        gameThread.setRunning(false);
-        //gameThread.join();
-        //gameThread.interrupt();
+    public void stop(LevelResult levelResult){
         levelState = LevelState.FINISHED;
-        ((Activity)context).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                showFinishDialog();
-            }
-        });
+        this.levelResult = levelResult;
+        showFinishDialog();
     }
 
     protected String getString(int resourceId){
@@ -155,7 +167,11 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
         while(retry){
             try{
                 gameThread.setRunning(false);
+                if (!gameThread.isInterrupted()){
+                    gameThread.interrupt();
+                }
                 gameThread.join();
+                retry = false;
             }catch(InterruptedException e){
                 e.printStackTrace();
                 retry = false;
@@ -169,40 +185,36 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void draw(Canvas canvas){
-        if (!alive && levelState != LevelState.FINISHED){
-            stop();
-            return;
+        if (levelState == LevelState.FINISHED){
+            gameThread.setRunning(false);
+            clearCanvas(canvas);
         }
         super.draw(canvas);
-        drawTimer(canvas);
-        //timeLabel.draw(canvas);
-        //square.draw(canvas);
+        drawTimer(canvas, getTimerValue());
     }
 
-    public void drawTimer(Canvas canvas){
+    private void clearCanvas(Canvas canvas) {
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+    }
+
+    public void drawTimer(Canvas canvas, String value){
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setColor(paintColor);
         paint.setTextSize(30);
         paint.setStyle(Paint.Style.FILL);
         paint.setFakeBoldText(true);
         paint.setTypeface(Typeface.create(FontHelper.getTypeface(), Typeface.BOLD));
-
-        String value = getTimerValue();
-
         canvas.drawText(value, getTimerLabelX(value, paint), getTimerLabelY(value, paint), paint);
     }
 
     private String getTimerValue() {
-        long diff = levelEndTime - System.currentTimeMillis();
-        if (diff <= 0){
-            alive = false;
-            levelResult = LevelResult.FAILED;
-            return "00:00";
-        }
-
+        diff = levelEndTime - System.currentTimeMillis();
         long seconds = TimeUnit.MILLISECONDS.toSeconds(diff);
         diff -= TimeUnit.SECONDS.toMillis(seconds);
-        long milliseconds = diff / 100;
+        long milliseconds = diff / 10;
+        if (seconds == 0 && milliseconds < 20){
+            milliseconds = 0;
+        }
 
         if(seconds < 5) {
             paintColor = Color.RED;
@@ -248,7 +260,10 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
             public void run(){
                 /*Intent intent = new Intent(context, LevelSelectActivity.class);
                 context.startActivity(intent);*/
-                ((GameActivity)context).closeActivity();
+
+                //((GameActivity)context).closeActivity();
+
+                ((GameActivity)context).selectLevel();
             }
         };
     }
@@ -263,7 +278,12 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private Runnable getRetryButtonHandler(){
-        return getGoButtonHandler();
+        return new Runnable() {
+            @Override
+            public void run() {
+                ((GameActivity)context).startLevel(getNumber());
+            }
+        };
     }
 
     private String getFinishDialogCaption (){
@@ -278,7 +298,7 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
             default:
                 break;
         }
-        return String.format(" %s - %S", getCaption(),levelResultString);
+        return String.format("%s - %S", getCaption(),levelResultString);
     }
 
     private String getFinishDialogMessage() {
@@ -290,5 +310,9 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
             default:
                 return null;
         }
+    }
+
+    public void setLevelResult(LevelResult value){
+        levelResult = value;
     }
 }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -12,7 +13,7 @@ import android.widget.TextView;
 
 import com.firelab.agame.levels.Level1;
 
-public class LevelSelectActivity extends AppCompatActivity {
+public class LevelSelectActivity extends BaseActivity {
 
     TextView captionTextView;
     Button btnLevel1;
@@ -31,6 +32,7 @@ public class LevelSelectActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_level_select);
+        View mainView = findViewById(R.id.MainLayout);
         FontHelper.ApplyFont(findViewById(R.id.MainLayout), getApplicationContext());
         SetActivityElementsTypeFace();
     }
@@ -56,21 +58,26 @@ public class LevelSelectActivity extends AppCompatActivity {
         btnLevel8.setTypeface(typeface);
         captionTextView.setTypeface(typeface);*/
 
-        btnLevel1.setOnClickListener(new View.OnClickListener() {
+       btnLevel1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LevelSelectActivity.this, GameActivity.class);
-                startActivity(intent);
+                setResult(1);
+                finish();
             }
         });
 
     }
 
     public void btnLevel1_OnClick(View view) {
-
+        /*Intent intent = new Intent(LevelSelectActivity.this, GameActivity.class);
+        startActivity(intent);*/
+        setResult(1);
+        finish();
     }
 
     public void btnLevel2_OnClick(View view) {
+        Intent intent = new Intent(LevelSelectActivity.this, TestActivity.class);
+        startActivity(intent);
     }
 
     public void btnLevel3_OnClick(View view) {

@@ -25,10 +25,11 @@
     <string name="NotImplementedExceptionMessage">Class must be implemented</string>
     <string name="Level1Caption">Level 01</string>
     <string name="DialogGoButtonCaption">Go!</string>
-    <string name="DialogNextButtonCaption">Next</string>
+    <string name="DialogNextButtonCaption">Continue</string>
     <string name="LevelResultSuccess">Success</string>
     <string name="LevelResultFailed">Failed</string>
     <string name="LevelResultNone">None</string>
     <string name="FinishDialogContinueOffer">Continue?</string>
     <string name="FinishDialogRetryOffer">Retry?</string>
+    <string name="title_activity_test">TestActivity</string>
 </resources>

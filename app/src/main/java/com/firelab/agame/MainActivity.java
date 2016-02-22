@@ -10,13 +10,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     Button btnPlay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -29,7 +28,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void btnPlay_OnClick(View view) {
-        Intent intent = new Intent(MainActivity.this, LevelSelectActivity.class);
+        Intent intent = new Intent(this, GameActivity.class);
+        //Intent intent = new Intent(MainActivity.this, LevelSelectActivity.class);
         startActivity(intent);
     }
 }

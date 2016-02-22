@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.view.MotionEvent;
 
 import com.firelab.agame.FontHelper;
@@ -18,14 +19,19 @@ import java.util.Random;
 
 public class Level1 extends Level {
     private String caption = getString(R.string.Level1Caption);
-    private String message = "You must tap 10 squares in 10 seconds";
-    private int levelSeconds = 5;
+    private final int number = 1;
+    private int levelSeconds = 10;
+    private int squareCounter = 0;
+    private int squareCount = 10;
+    private String message = "You must tap " + squareCount + " squares in " + levelSeconds + " seconds";
     int x = 100;
     int y  = 100;
     float tapX = 0;
     float tapY = 0;
     int squareWidth = 0;
     int squareHeight = 0;
+    int tapOffset = 10;
+
 
     public Level1(Context context) {
         super(context);
@@ -45,14 +51,25 @@ public class Level1 extends Level {
     }
 
     @Override
+    public int getNumber(){
+        return number;
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         if(event.getAction() == MotionEvent.ACTION_DOWN){
             tapX = event.getX();
             tapY = event.getY();
-            if (tapX >= x && tapX <= x + squareWidth && tapY >= y && tapY <= y + squareHeight) {
+            if (tapX >= x-tapOffset && tapX <= x + squareWidth + tapOffset &&
+                    tapY >= y-tapOffset && tapY <= y + squareHeight + tapOffset) {
+                squareCounter++;
+                if (squareCounter >= squareCount){
+                    stop(LevelResult.SUCCESS);
+                }
                 Random rn = new Random();
                 x = rn.nextInt(getWidth() - squareWidth);
                 y = rn.nextInt(getHeight() - squareHeight);
+
             }
         }
         return super.onTouchEvent(event);
@@ -69,11 +86,27 @@ public class Level1 extends Level {
         squareWidth = square.getWidth();
         squareHeight = square.getHeight();
         canvas.drawBitmap(square, x, y, null);
-        drawBounds(canvas);
+        //drawBounds(canvas);
+        drawCounter(canvas);
         //timeLabel.draw(canvas);
         //square.draw(canvas);
     }
 
+
+    // TODO Cache paint
+    private void drawCounter(Canvas canvas){
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setColor(Color.YELLOW);
+        paint.setTextSize(30);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setTypeface(Typeface.create(FontHelper.getTypeface(), Typeface.BOLD));
+        Rect rect = new Rect();
+
+        String counterString = String.valueOf(squareCounter) + "/" + String.valueOf(squareCount);
+
+        paint.getTextBounds(counterString, 0, counterString.length(), rect);
+        canvas.drawText(counterString, 10, rect.height() + 10, paint);
+    }
 
 
     public void drawBounds(Canvas canvas){
