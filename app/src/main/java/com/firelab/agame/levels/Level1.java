@@ -64,7 +64,7 @@ public class Level1 extends Level {
                     tapY >= y-tapOffset && tapY <= y + squareHeight + tapOffset) {
                 squareCounter++;
                 if (squareCounter >= squareCount){
-                    stop(LevelResult.SUCCESS);
+                    finish(LevelResult.SUCCESS);
                 }
                 Random rn = new Random();
                 x = rn.nextInt(getWidth() - squareWidth);

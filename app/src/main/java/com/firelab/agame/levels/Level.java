@@ -1,8 +1,10 @@
 package com.firelab.agame.levels;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -28,7 +30,7 @@ import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 
 enum LevelState {
-    CREATED,
+    LOADED,
     STARTED,
     FINISHED
 }
@@ -37,6 +39,11 @@ enum LevelResult {
     SUCCESS,
     FAILED,
     NONE
+}
+
+enum LevelLockState{
+    LOCKED,
+    UNLOCKED
 }
 
 public class Level extends SurfaceView implements SurfaceHolder.Callback {
@@ -64,7 +71,7 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            stop(LevelResult.FAILED);
+            finish(LevelResult.FAILED);
         }
     };
 
@@ -76,7 +83,7 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
         getHolder().addCallback(this);
         gameThread = new GameThread(getHolder(), this);
         setFocusable(true);
-        levelState = LevelState.CREATED;
+        levelState = LevelState.LOADED;
     }
 
     public String getCaption() {
@@ -140,9 +147,10 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
                 getNextButtonCaption());
     }
 
-    public void stop(LevelResult levelResult){
+    public void finish(LevelResult levelResult){
         levelState = LevelState.FINISHED;
         this.levelResult = levelResult;
+        saveLevelState(levelState);
         showFinishDialog();
     }
 
@@ -181,6 +189,16 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
 
     public void update(){
         //timeLabel.update();
+    }
+
+    private void saveLevelState(LevelState levelState){
+        DBHelper dbHelper = new DBHelper(context);
+        ContentValues contentValues = new ContentValues();
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        contentValues.put("State", levelState.ordinal());
+        contentValues.put("Time", ((getLevelSeconds()*milliFactor) - diff));
+        db.update("Level", contentValues,  String.format("%s = ?", "Name"),
+                new String[]{getCaption()});
     }
 
     @Override
@@ -258,11 +276,6 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     private Runnable getCancelButtonHandler(){
         return new Runnable(){
             public void run(){
-                /*Intent intent = new Intent(context, LevelSelectActivity.class);
-                context.startActivity(intent);*/
-
-                //((GameActivity)context).closeActivity();
-
                 ((GameActivity)context).selectLevel();
             }
         };
@@ -298,7 +311,7 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
             default:
                 break;
         }
-        return String.format("%s - %S", getCaption(),levelResultString);
+        return String.format("%s - %S", getCaption(), levelResultString);
     }
 
     private String getFinishDialogMessage() {
