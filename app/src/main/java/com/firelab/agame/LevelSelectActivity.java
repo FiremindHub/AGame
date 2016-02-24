@@ -1,5 +1,6 @@
 package com.firelab.agame;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firelab.agame.levels.Level1;
 
@@ -81,6 +83,12 @@ public class LevelSelectActivity extends BaseActivity {
     }
 
     public void btnLevel3_OnClick(View view) {
+        Context context = getApplicationContext();
+        LevelButton btn = (LevelButton)view;
+        CharSequence text = String.valueOf(btn.getLevelNumber());
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 
     public void btnLevel4_OnClick(View view) {

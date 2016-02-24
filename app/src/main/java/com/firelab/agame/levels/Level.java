@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.firelab.agame.DBHelper;
 import com.firelab.agame.FontHelper;
 import com.firelab.agame.GameActivity;
 import com.firelab.agame.GameThread;
@@ -196,9 +197,22 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
         ContentValues contentValues = new ContentValues();
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         contentValues.put("State", levelState.ordinal());
+        contentValues.put("Result", levelResult.ordinal());
         contentValues.put("Time", ((getLevelSeconds()*milliFactor) - diff));
         db.update("Level", contentValues,  String.format("%s = ?", "Name"),
                 new String[]{getCaption()});
+        if (levelResult == LevelResult.SUCCESS){
+            unlockNextLevel();
+        }
+    }
+
+    private void unlockNextLevel(){
+        DBHelper dbHelper = new DBHelper(context);
+        ContentValues contentValues = new ContentValues();
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        contentValues.put("LockState", LevelLockState.UNLOCKED.ordinal());
+        db.update("Level", contentValues,  String.format("%s = ?", "Number"),
+                new String[]{Integer.toString(getNumber())});
     }
 
     @Override
