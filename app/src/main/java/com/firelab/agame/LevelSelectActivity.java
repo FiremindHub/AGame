@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -31,11 +32,9 @@ public class LevelSelectActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_level_select);
-        View mainView = findViewById(R.id.MainLayout);
         FontHelper.ApplyFont(findViewById(R.id.MainLayout), getApplicationContext());
+        SetButtonsClickListener((ViewGroup)findViewById(R.id.MainLayout));
         SetActivityElementsTypeFace();
     }
 
@@ -59,20 +58,22 @@ public class LevelSelectActivity extends BaseActivity {
         btnLevel7.setTypeface(typeface);
         btnLevel8.setTypeface(typeface);
         captionTextView.setTypeface(typeface);*/
-
-       btnLevel1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setResult(1);
-                finish();
-            }
-        });
-
     }
 
-    public void btnLevel1_OnClick(View view) {
-        /*Intent intent = new Intent(LevelSelectActivity.this, GameActivity.class);
-        startActivity(intent);*/
+
+    @Override
+    public void onClick(View v){
+        LevelButton button = (LevelButton)v;
+
+        if (button == null){
+            return;
+        }
+
+        CharSequence text = String.valueOf(button.getLevelNumber());
+        int duration = Toast.LENGTH_LONG;
+        Toast toast = Toast.makeText(getApplicationContext(), text, duration);
+        toast.show();
+
         setResult(1);
         finish();
     }
@@ -85,10 +86,7 @@ public class LevelSelectActivity extends BaseActivity {
     public void btnLevel3_OnClick(View view) {
         Context context = getApplicationContext();
         LevelButton btn = (LevelButton)view;
-        CharSequence text = String.valueOf(btn.getLevelNumber());
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
+
     }
 
     public void btnLevel4_OnClick(View view) {
