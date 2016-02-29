@@ -1,6 +1,7 @@
 package com.firelab.agame;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +22,8 @@ public class BaseActivity extends Activity implements View.OnClickListener{// Ap
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        DBHelper dbHelper = new DBHelper(getApplicationContext());
         Log.e("ACTIVITY_CREATED", this.getClass().getSimpleName() + ", " + Thread.currentThread().getName());
     }
 

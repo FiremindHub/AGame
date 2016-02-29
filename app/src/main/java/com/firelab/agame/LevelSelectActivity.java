@@ -33,13 +33,13 @@ public class LevelSelectActivity extends BaseActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_level_select);
-        FontHelper.ApplyFont(findViewById(R.id.MainLayout), getApplicationContext());
-        SetButtonsClickListener((ViewGroup)findViewById(R.id.MainLayout));
+        ViewGroup mainLayout = (ViewGroup)findViewById(R.id.MainLayout);
+        FontHelper.ApplyFont(mainLayout, getApplicationContext());
+        SetButtonsClickListener(mainLayout);
         SetActivityElementsTypeFace();
     }
 
     private void SetActivityElementsTypeFace(){
-        //Typeface typeface = Typeface.createFromAsset(getAssets(), "a_LCDNova Regular.ttf");
         captionTextView = (TextView)findViewById(R.id.ActivityCaptionTextView);
         btnLevel1 = (Button)findViewById(R.id.btnLevel1);
         btnLevel2 = (Button)findViewById(R.id.btnLevel2);
@@ -49,17 +49,7 @@ public class LevelSelectActivity extends BaseActivity {
         btnLevel6 = (Button)findViewById(R.id.btnLevel6);
         btnLevel7 = (Button)findViewById(R.id.btnLevel7);
         btnLevel8 = (Button)findViewById(R.id.btnLevel8);
-        /*btnLevel1.setTypeface(typeface);
-        btnLevel2.setTypeface(typeface);
-        btnLevel3.setTypeface(typeface);
-        btnLevel4.setTypeface(typeface);
-        btnLevel5.setTypeface(typeface);
-        btnLevel6.setTypeface(typeface);
-        btnLevel7.setTypeface(typeface);
-        btnLevel8.setTypeface(typeface);
-        captionTextView.setTypeface(typeface);*/
     }
-
 
     @Override
     public void onClick(View v){
@@ -69,12 +59,14 @@ public class LevelSelectActivity extends BaseActivity {
             return;
         }
 
-        CharSequence text = String.valueOf(button.getLevelNumber());
+        int levelNumber = button.getLevelNumber();
+
+        CharSequence text = String.valueOf(levelNumber);
         int duration = Toast.LENGTH_LONG;
         Toast toast = Toast.makeText(getApplicationContext(), text, duration);
         toast.show();
 
-        setResult(1);
+        setResult(levelNumber);
         finish();
     }
 

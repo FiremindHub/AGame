@@ -33,7 +33,8 @@ import java.util.concurrent.TimeUnit;
 enum LevelState {
     LOADED,
     STARTED,
-    FINISHED
+    FINISHED,
+    NONE
 }
 
 enum LevelResult {
@@ -96,6 +97,9 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     public int getNumber(){
         return 0;
     }
+    private int getNextLevelNumber(){
+        return getNumber() + 1;
+    }
     public int getLevelSeconds() { return 0; }
     public int getLevelHeight(){return height;}
     public int getLevelWidth(){return width;}
@@ -149,6 +153,9 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void finish(LevelResult levelResult){
+        if (levelState == LevelState.FINISHED){
+            return;
+        }
         levelState = LevelState.FINISHED;
         this.levelResult = levelResult;
         saveLevelState(levelState);
@@ -212,7 +219,7 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         contentValues.put("LockState", LevelLockState.UNLOCKED.ordinal());
         db.update("Level", contentValues,  String.format("%s = ?", "Number"),
-                new String[]{Integer.toString(getNumber())});
+                new String[]{Integer.toString(getNextLevelNumber())});
     }
 
     @Override
@@ -252,7 +259,7 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
             paintColor = Color.RED;
         }
 
-        return String.format("%02d.%02d", seconds, milliseconds);
+        return String.format("%02d:%02d", seconds, milliseconds);
     }
 
     private int getTimerLabelX(String value, Paint paint){

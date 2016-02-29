@@ -13,7 +13,7 @@ public final class FontHelper {
     private static Typeface typeface;
 
     public static final void ApplyFont(View parentView, Context context){
-        final String typeFaceName = "MainFont.ttf";
+        final String typeFaceName = "KellySlab-Regular.otf";
         typeface = Typeface.createFromAsset(context.getAssets(), typeFaceName);
         SetFont((ViewGroup)parentView, typeface);
     }
@@ -22,8 +22,6 @@ public final class FontHelper {
         for (int i = 0; i < parentView.getChildCount(); i++) {
 
             View view = parentView.getChildAt(i);
-
-//You can add any view element here on which you want to apply font
 
             if (view instanceof EditText) {
                 ((EditText) view).setTypeface(typeface);

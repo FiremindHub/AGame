@@ -57,6 +57,9 @@ public class Level1 extends Level {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (levelState == LevelState.FINISHED){
+            return super.onTouchEvent(event);
+        }
         if(event.getAction() == MotionEvent.ACTION_DOWN){
             tapX = event.getX();
             tapY = event.getY();

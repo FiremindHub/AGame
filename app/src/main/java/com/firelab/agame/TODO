@@ -5,3 +5,5 @@ Message in Monitor: Thread do too much work
 Database
 Own class for seconds and milliseconds store
 Square offset
+Statistic (time spent, time per level, average 4 all, etc)
+Level Button icons

@@ -1,6 +1,7 @@
 package com.firelab.agame;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.widget.Button;
 
@@ -19,6 +20,12 @@ public class LevelButton extends Button {
             if("levelNumber".equals(attrs.getAttributeName(i))) {
                 setLevelNumber(attrs.getAttributeIntValue(i, 0));
             }
+        }
+        DBHelper dbHelper = new DBHelper(context);
+        boolean isLevelUnlocked = dbHelper.getIsLevelUnlocked(getLevelNumber());
+        if (!isLevelUnlocked){
+            setEnabled(isLevelUnlocked);
+            setTextColor(Color.GRAY);
         }
     }
 
