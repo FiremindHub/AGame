@@ -61,6 +61,8 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     LevelState levelState;
     LevelResult levelResult = LevelResult.NONE;
     long diff = getLevelSeconds() * milliFactor;
+    Paint timerPaint;
+    Rect timerRect;
 
     private Handler handler = new Handler(Looper.getMainLooper()){
         @Override
@@ -77,8 +79,6 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
         }
     };
 
-
-
     public Level(Context context){
         super(context);
         this.context = context;
@@ -86,6 +86,7 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
         gameThread = new GameThread(getHolder(), this);
         setFocusable(true);
         levelState = LevelState.LOADED;
+        timerPaint = CreateTimerPaint();
     }
 
     public String getCaption() {
@@ -237,13 +238,17 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void drawTimer(Canvas canvas, String value){
+        canvas.drawText(value, getTimerLabelX(value, timerPaint), getTimerLabelY(value, timerPaint), timerPaint);
+    }
+
+    private Paint CreateTimerPaint(){
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(paintColor);
+        paint.setColor(Color.YELLOW);
         paint.setTextSize(30);
         paint.setStyle(Paint.Style.FILL);
         paint.setFakeBoldText(true);
         paint.setTypeface(Typeface.create(FontHelper.getTypeface(), Typeface.BOLD));
-        canvas.drawText(value, getTimerLabelX(value, paint), getTimerLabelY(value, paint), paint);
+        return paint;
     }
 
     private String getTimerValue() {
@@ -254,9 +259,8 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
         if (seconds == 0 && milliseconds < 20){
             milliseconds = 0;
         }
-
         if(seconds < 5) {
-            paintColor = Color.RED;
+            timerPaint.setColor(Color.RED);
         }
 
         return String.format("%02d:%02d", seconds, milliseconds);
