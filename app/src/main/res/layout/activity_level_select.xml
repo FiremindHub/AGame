@@ -12,19 +12,6 @@
     android:background="@color/MainBackgroundColor"
     android:id="@+id/MainLayout">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/LevelSelectActivityCaption"
-        android:id="@+id/ActivityCaptionTextView"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:textColor="@color/MainTextColor"
-        android:textAlignment="center"
-        android:gravity="center"
-        android:textSize="20sp"/>
-
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -49,6 +36,7 @@
                 android:textSize="20sp"
                 android:layout_margin="5dp"
                 custom:levelNumber="1" />
+
             <com.firelab.agame.LevelButton
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -59,6 +47,7 @@
                 android:textSize="20sp"
                 android:layout_margin="5dp"
                 custom:levelNumber="2" />
+
             <com.firelab.agame.LevelButton
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -128,6 +117,19 @@
                 custom:levelNumber="8" />
         </TableRow>
     </TableLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/LevelSelectActivityCaption"
+        android:id="@+id/ActivityCaptionTextView"
+        android:textColor="@color/MainTextColor"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 
 </RelativeLayout>

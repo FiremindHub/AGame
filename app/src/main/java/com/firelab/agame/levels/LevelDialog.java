@@ -23,7 +23,7 @@ public class LevelDialog {
     Vibrator vib;
     RelativeLayout layout;
     Context context;
-    Button btnGo;
+    Button btnContinue;
     Button btnRetry;
     Button btnCancel;
     Runnable btnGoHandler;
@@ -46,7 +46,7 @@ public class LevelDialog {
         dialog.setContentView(R.layout.level_dialog);
         dialog.setCancelable(false);
         layout = (RelativeLayout) dialog.findViewById(R.id.levelDialogLayout);
-        btnGo = (Button)dialog.findViewById(R.id.btnGo);
+        btnContinue = (Button)dialog.findViewById(R.id.btnContinue);
         btnRetry = (Button)dialog.findViewById(R.id.btnRetry);
         btnCancel = (Button)dialog.findViewById(R.id.btnCancel);
         vib = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
@@ -54,7 +54,7 @@ public class LevelDialog {
     }
 
     @SuppressWarnings("static-access")
-    public void showDialog(String title, String message, String goButtonCaption) {
+    public void showDialog(String title, String message, String continueButtonCaption) {
         TextView messageTextView = (TextView) dialog.findViewById(R.id.message);
         TextView titleTextView = (TextView) dialog.findViewById(R.id.title);
         FontHelper.ApplyFont(layout, context);
@@ -64,7 +64,7 @@ public class LevelDialog {
         }
         messageTextView.setText(message);
         dialog.show();
-        btnGo.setText(bold(goButtonCaption));
+        btnContinue.setText(bold(continueButtonCaption));
 
 
     }
@@ -97,10 +97,10 @@ public class LevelDialog {
 
     public void setGoButtonVisible(Boolean visible){
         if (!visible) {
-            btnGo.setVisibility(View.INVISIBLE);
+            btnContinue.setVisibility(View.INVISIBLE);
         }
         else{
-            btnGo.setVisibility(View.VISIBLE);
+            btnContinue.setVisibility(View.VISIBLE);
         }
     }
 
@@ -117,7 +117,7 @@ public class LevelDialog {
     }
 
     private void SetButtonsListeners(){
-        btnGo.setOnClickListener(new View.OnClickListener() {
+        btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 /*

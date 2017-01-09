@@ -25,7 +25,7 @@ import java.util.Random;
 public class Level1 extends Level {
     private String caption = getString(R.string.Level1Caption);
     private final int number = 1;
-    private int levelSeconds = 10000;
+    private int levelSeconds = 10;
     private int squareCounter = 0;
     private int squareCount = 10;
     private String message = "You must tap " + squareCount + " squares in " + levelSeconds + " seconds";
@@ -52,6 +52,8 @@ public class Level1 extends Level {
         super(context);
         squareTapAnimation = new SquareTapAnimation(context);
         square = BitmapFactory.decodeResource(getResources(), R.drawable.square);
+        squareWidth = square.getWidth();
+        squareHeight = square.getHeight();
         soundPool = new SoundPool(MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
         //soundPool.setOnLoadCompleteListener(context);
         try {
@@ -103,7 +105,6 @@ public class Level1 extends Level {
                 Random rn = new Random();
                 x = rn.nextInt(getWidth() - squareWidth);
                 y = rn.nextInt(getHeight() - squareHeight);
-
             }
             return true;
         }
@@ -123,14 +124,17 @@ public class Level1 extends Level {
     @Override
     public void draw(Canvas canvas){
         super.draw(canvas);
-        squareWidth = square.getWidth();
-        squareHeight = square.getHeight();
+        //squareWidth = square.getWidth();
+        //squareHeight = square.getHeight();
         canvas.drawBitmap(square, x, y, null);
         drawAnimation(canvas);
         //drawBounds(canvas);
         drawCounter(canvas);
         //timeLabel.draw(canvas);
         //square.draw(canvas);
+        if (levelState == LevelState.FINISHED){
+            clearCanvas(canvas);
+        }
     }
 
     private void drawAnimation(Canvas canvas){

@@ -24,8 +24,9 @@
     <string name="LevelSelectActivityCaption">Levels</string>
     <string name="NotImplementedExceptionMessage">Class must be implemented</string>
     <string name="Level1Caption">Level 01</string>
+    <string name="Level2Caption">Level 02</string>
     <string name="DialogGoButtonCaption">Go!</string>
-    <string name="DialogNextButtonCaption">Continue</string>
+    <string name="DialogContinueButtonCaption">Continue</string>
     <string name="LevelResultSuccess">Success</string>
     <string name="LevelResultFailed">Failed</string>
     <string name="LevelResultNone">None</string>

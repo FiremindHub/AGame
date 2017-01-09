@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 
 import com.firelab.agame.levels.Level;
+import com.firelab.agame.levels.LevelResult;
 
 public class GameThread extends Thread
 {
@@ -24,6 +25,7 @@ public class GameThread extends Thread
     @Override
     public void run() {
         long startTime = 0;
+        long finishTime = System.currentTimeMillis() + (level.getLevelSeconds() * level.getMilliFactor());
         long timeMillis;
         long waitTime;
         long totalTime = 0;
@@ -39,7 +41,9 @@ public class GameThread extends Thread
                     this.level.update();
                     this.level.draw(canvas);
                 }
-            } catch(Exception e){}
+            } catch(Exception e){
+                Log.e("LOCKCANVAS_Exception", e.getMessage() + ": ");
+            }
             finally {
                 if (canvas != null){
                     try{
@@ -54,6 +58,7 @@ public class GameThread extends Thread
             if (waitTime > 0){
                 try{
                     this.sleep(waitTime);
+                    Log.e("GAMETHREAD_SLEEP", String.valueOf(waitTime));
                 }catch(Exception e){
                     Log.e("GAMETHREAD_Exception", e.getMessage() + ": " + waitTime);
                 }
@@ -61,9 +66,14 @@ public class GameThread extends Thread
             totalTime += System.nanoTime() - startTime;
             frameCount++;
             if (frameCount == FPS) {
-                averageFPS = 1000/((totalTime/frameCount)/100000);
+                averageFPS = 1000/((totalTime/frameCount)/1000000);
+                Log.e("AVERAGE_FPS", String.valueOf(averageFPS));
                 frameCount = 0;
                 totalTime = 0;
+            }
+            if (System.currentTimeMillis() > finishTime){
+                level.SendFinishMessage(LevelResult.FAILED);
+                setRunning(false);
             }
         }
         level = null;
