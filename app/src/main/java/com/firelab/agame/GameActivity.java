@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import com.firelab.agame.levels.Level;
 import com.firelab.agame.levels.Level1;
 import com.firelab.agame.levels.Level2;
+import com.firelab.agame.levels.Level3;
 
 import java.util.concurrent.TimeUnit;
 
@@ -71,6 +72,8 @@ public class GameActivity extends BaseActivity {
                 return new Level1(this);
             case 2:
                 return new Level2(this);
+            case 3:
+                return new Level3(this);
             default:
                 return null;
         }

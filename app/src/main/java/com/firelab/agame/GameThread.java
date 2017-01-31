@@ -38,7 +38,7 @@ public class GameThread extends Thread
             try {
                 canvas = this.surfaceHolder.lockCanvas();
                 synchronized (surfaceHolder){
-                    this.level.update();
+                    this.level.update((int)averageFPS);
                     this.level.draw(canvas);
                 }
             } catch(Exception e){

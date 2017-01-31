@@ -5,12 +5,15 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -24,7 +27,9 @@ import com.firelab.agame.GameActivity;
 import com.firelab.agame.GameThread;
 import com.firelab.agame.LevelSelectActivity;
 import com.firelab.agame.R;
+import com.firelab.agame.SquareTapAnimation;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Timer;
@@ -57,6 +62,14 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     long diff = getLevelSeconds() * milliFactor;
     Paint timerPaint;
     Rect timerRect;
+    int squareTapAnimationX = 0;
+    int squareTapAnimationY = 0;
+    final int MAX_STREAMS = 5;
+    SoundPool soundPool;
+    int soundIdSquareClick;
+    private SquareTapAnimation squareTapAnimation;
+    private Paint counterPaint;
+    private Rect counterRect;
 
     private Handler handler = new Handler(Looper.getMainLooper()){
         @Override
@@ -71,11 +84,21 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     public Level(Context context){
         super(context);
         this.context = context;
+        soundPool = new SoundPool(MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
+        //soundPool.setOnLoadCompleteListener(context);
+        try {
+            soundIdSquareClick = soundPool.load(context.getAssets().openFd("SquareClick2.ogg"), 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         getHolder().addCallback(this);
         gameThread = new GameThread(getHolder(), this);
         setFocusable(true);
         levelState = LevelState.LOADED;
         timerPaint = CreateTimerPaint();
+        squareTapAnimation = new SquareTapAnimation(context);
+        counterPaint = CreateCounterPaint();
+        counterRect = CreateCounterRect();
     }
 
     public String getCaption() {
@@ -190,7 +213,7 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    public void update(){
+    public void update(int averageFPS){
         //timeLabel.update();
     }
 
@@ -220,11 +243,12 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void draw(Canvas canvas){
         super.draw(canvas);
-        //drawTimer(canvas, getTimerValue());
-        /*if (levelState == LevelState.FINISHED){
+        drawTimer(canvas, getTimerValue());
+        drawAnimation(canvas);
+        if (levelState == LevelState.FINISHED){
             gameThread.setRunning(false);
             clearCanvas(canvas);
-        }*/
+        }
     }
 
     protected void clearCanvas(Canvas canvas) {
@@ -282,6 +306,18 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         return sdf.format(cal.getTime());
+    }
+
+    private void drawAnimation(Canvas canvas){
+        Bitmap squareTerminatedFrame = squareTapAnimation.getImage();
+        if (squareTerminatedFrame == null) {
+            return;
+        }
+        if (levelState == LevelState.FINISHED){
+            return;
+        }
+        canvas.drawBitmap(squareTerminatedFrame, squareTapAnimationX, squareTapAnimationY, null);
+        squareTapAnimation.update();
     }
 
     private Runnable getGoButtonHandler(){
@@ -359,4 +395,37 @@ public class Level extends SurfaceView implements SurfaceHolder.Callback {
     public long getLevelEndTime(){
         return levelEndTime;
     }
+
+    private void PlaySound(){
+        soundPool.play(soundIdSquareClick, 1, 1, 0, 0, 1);
+    }
+
+    protected void ProcessSquareTap(int x, int y){
+        PlaySound();
+        squareTapAnimationX = x;
+        squareTapAnimationY = y;
+        squareTapAnimation.Start();
+    }
+
+    protected void drawCounter(Canvas canvas, int squareCounter, int squareCount){
+        String counterString = String.valueOf(squareCounter) + "/" + String.valueOf(squareCount);
+        counterPaint.getTextBounds(counterString, 0, counterString.length(), counterRect);
+        canvas.drawText(counterString, 10, counterRect.height() + 10, counterPaint);
+    }
+
+    private Paint CreateCounterPaint(){
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setColor(Color.YELLOW);
+        paint.setTextSize(30);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setTypeface(Typeface.create(FontHelper.getTypeface(), Typeface.BOLD));
+        return paint;
+    }
+
+    private Rect CreateCounterRect(){
+        Rect rect = new Rect();
+
+        return rect;
+    }
+
 }
