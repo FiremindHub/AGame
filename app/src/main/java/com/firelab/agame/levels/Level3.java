@@ -158,21 +158,29 @@ public class Level3 extends Level{
     }
 
     private void ChangeDirection(){
-        currentDirection = moveDirections.get(random.nextInt(moveDirections.size()));
+        String changedDirection = currentDirection;
+        while (changedDirection == currentDirection){
+            changedDirection = moveDirections.get(random.nextInt(moveDirections.size()));
+        }
+        currentDirection = changedDirection;
         Log.e("UPDATE ChangeDirection", currentDirection + " " + String.valueOf(squareX) + " : " + String.valueOf(squareY));
         switch (currentDirection){
             case "Top2Bottom":
                 squareX = random.nextInt(getLevelWidth() - squareWidth);
                 squareY = 0;
+                break;
             case "Bottom2Top":
                 squareX = random.nextInt(getLevelWidth() - squareWidth);
                 squareY = getLevelHeight() - squareHeight;
+                break;
             case "Left2Right":
                 squareX = 0;
                 squareY = random.nextInt(getLevelHeight() - squareHeight);
+                break;
             case "Right2Left":
                 squareX = getLevelWidth() - squareWidth;
                 squareY = random.nextInt(getLevelHeight() - squareHeight);
+                break;
         }
         Log.e("UPDATE DirectionChanged", currentDirection + " " + String.valueOf(squareX) + " : " + String.valueOf(squareY));
     }

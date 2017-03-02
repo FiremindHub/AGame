@@ -17,7 +17,7 @@ public class Level2 extends Level{
     private final int number = 2;
     private final int levelSeconds = 20;
     private int squareCounter = 0;
-    private final int squareCount = 10;
+    private final int squareCount = 5;
     private final String message = "You must catch " + squareCount + " squares in " + levelSeconds + " seconds";
     private final Bitmap square;
     private int offsetY = 0;
